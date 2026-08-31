@@ -22,9 +22,18 @@
 
 ### [Unreleased]
 
+#### 追加
+- `references/` 全7ファイルを執筆
+  - `00_mapping.md`（選定の対応表）
+  - `10_qc-story.md`（進め方の型）
+  - `20_factor-axes.md`（要因の分解軸）
+  - `30_qc7.md`（QC7つ道具）
+  - `40_n7.md`（新QC7つ道具）
+  - `50_standardization.md`（標準化・定着）
+  - `60_data-design.md`（データ取得設計）
+
 #### 追加予定
 - `SKILL.md`（ルーター本体）
-- `references/` 全7ファイル
 - `assets/` テンプレート3点
 
 ### 設計 - 2026-09-01
