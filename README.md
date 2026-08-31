@@ -10,7 +10,10 @@
 
 | スキル | 版 | 概要 | 状態 |
 |---|---|---|---|
-| [`mfg-improvement-frameworks`](skills/mfg-improvement-frameworks/) | 1.0.0 | 製造現場の問題解決をQCストーリー・4M・QC7つ道具・新QC7つ道具で体系的に支援 | 設計完了 / 実装中 |
+| [`mfg-improvement-frameworks`](skills/mfg-improvement-frameworks/) | 1.0.0 | 製造現場の問題解決をQCストーリー・4M・QC7つ道具・新QC7つ道具で体系的に支援 | 設計完了(v0.2) / 実装中 |
+
+**主戦場は Cowork。** スキルを育てている間は Cowork のみで使い、安定してからチャットにも配布する。
+理由は [設計書 v0.2](docs/design/mfg-improvement-frameworks-v0.2.md) を参照。
 
 ---
 
@@ -51,7 +54,8 @@ mfg-kaizen-skills/
 ├── docs/                  # ★ スキルとしては読み込まれない資料
 │   ├── design/            #   設計書（版ごとに残す）
 │   ├── decisions/         #   意思決定の記録
-│   └── ops/               #   導入・配布・運用手順
+│   ├── ops/               #   導入・配布・運用手順
+│   └── feedback.md        #   改善ログ（Claudeが自動追記する）
 │
 ├── skills/                # ★ ここだけが配布対象
 │   └── mfg-improvement-frameworks/
@@ -82,15 +86,35 @@ mfg-kaizen-skills/
 
 ---
 
+## 改善サイクル
+
+スキルは自動更新されない。仕組みで担保する。
+
+```
+Coworkで使う
+  → 期待どおり動かなければ Claude が docs/feedback.md に自動追記
+  → 月1回 or 未対応5件で棚卸し（人が判断）
+  → 修正案を Claude が提案 → 承認 → 書き換え
+  → version を上げる
+```
+
+**記録は自動、書き換えは承認制**とする。1回の失敗が永久ルールになる事故を防ぐため。
+定型ルールは [`docs/design/skill-md-improvement-protocol.md`](docs/design/skill-md-improvement-protocol.md)。
+
+---
+
 ## 配布フロー
 
 ```
 skills/<name>/ を編集
    │
-   ├─→ ZIP化           → チャット：Settings → カスタマイズ → スキル → 追加
-   ├─→ ~/.claude/skills/ へコピー → Claude Code / Cowork
+   ├─→ ~/.claude/skills/ へコピー → Cowork / Claude Code  ★育成期はここだけ
+   ├─→ ZIP化           → チャット：Settings → カスタマイズ → スキル → 追加（安定期）
    └─→ git tag + push  → チーム共有
 ```
+
+Cowork / Code はスキルのフォルダを監視しているため、SKILL.md の編集はセッション中に反映される
+（反映されない場合は `/reload-skills`）。チャットは再アップロードと再起動が必要。
 
 手順の詳細は [`docs/ops/deployment.md`](docs/ops/deployment.md)。
 
