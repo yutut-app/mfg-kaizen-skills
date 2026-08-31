@@ -20,7 +20,7 @@
 
 ## mfg-improvement-frameworks
 
-### [Unreleased]
+### [1.0.0] - 2026-09-01
 
 #### 追加
 - `references/` 全7ファイルを執筆
@@ -32,9 +32,12 @@
   - `50_standardization.md`（標準化・定着）
   - `60_data-design.md`（データ取得設計）
 
-#### 追加予定
-- `SKILL.md`（ルーター本体）
-- `assets/` テンプレート3点
+- `SKILL.md`（ルーター本体＋改善プロトコル）
+- `assets/qc-process-table.xlsx`（QC工程表テンプレ、工程図記号の凡例つき）
+- `assets/check-sheet.xlsx`（記録用／点検用／層別設計メモ）
+- `assets/a3-report.md`（A3改善報告書テンプレ）
+
+これにより v1.0.0 の実装が完了。
 
 ### 設計 - 2026-09-01
 - 設計書 v0.1 を確定（`docs/design/mfg-improvement-frameworks-v0.1.md`）
@@ -45,3 +48,9 @@
 - 改善プロトコルを追加（記録は自動、書き換えは承認制）
 - `docs/feedback.md`（改善ログ）を追加
 - 運用フェーズを「育成期／安定期」の2段階に定義
+
+### [1.0.1] - 2026-09-01
+#### 修正
+- `SKILL.md` の description を325文字→186文字に短縮（200文字の上限に違反していた）
+- description の記法をブロックスカラー `>` から二重引用符の1行に変更
+  （`>` は改行を半角スペースに畳むため、日本語文中に不要な空白が混入していた）
