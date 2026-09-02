@@ -1,0 +1,14 @@
+dist/
+*.skill
+*.zip
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.tmp
+*.bak
+~$*
+.env
+*.key
+*.pem
+credentials*
