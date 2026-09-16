@@ -10,7 +10,7 @@
 
 | スキル | 版 | 概要 | 状態 |
 |---|---|---|---|
-| [`mfg-improvement-frameworks`](skills/mfg-improvement-frameworks/) | 1.6.0 | 製造現場の問題解決をQCストーリー・4M・QC7つ道具・新QC7つ道具で体系的に支援 | 運用中（育成期） |
+| [`mfg-improvement-frameworks`](skills/mfg-improvement-frameworks/) | 1.7.0 | 製造現場の問題解決をQCストーリー・4M・QC7つ道具・新QC7つ道具で体系的に支援 | 運用中（育成期） |
 
 **主戦場は Cowork。** スキルを育てている間は Cowork のみで使い、安定してからチャットにも配布する。
 理由は [設計書 v0.2](docs/design/mfg-improvement-frameworks-v0.2.md) を参照。
