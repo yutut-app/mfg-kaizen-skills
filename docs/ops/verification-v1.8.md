@@ -244,7 +244,7 @@ TMCシステム「目視検査の見逃しゼロへ」、Hakky Handbook「外観
 |---|---|---|
 | R1 | `references/10_qc-story.md` 第2章（組み替え・現状把握の2種類） | `SKILL.md` 組み立て手順、`references/00_mapping.md` 第2章「ステップの組み替え方」 |
 | R2 | `references/00_mapping.md` 第5章（代替する道具の列・ステップ4） | `references/40_n7.md` アローダイアグラム法、`references/20_factor-axes.md` 第10章 |
-| R3 | `references/90_handoff.md` 第4章（候補 → 検証 → 真因） | `references/30_qc7.md` 特性要因図「実務での見極め」、`references/10_qc-story.md` ステップ2 |
+| R3 | `references/90_handoff.md` 第10章（要因 → 検証 → 真因） | `references/30_qc7.md` 特性要因図「実務での見極め」、`references/10_qc-story.md` ステップ2 |
 | R4 | `references/10_qc-story.md` ステップ3（積み上げ・月次の段・減少率） | `references/90_handoff.md` 第6章「語る順」・第7章 |
 | R5 | `references/10_qc-story.md` ステップ1 | `references/00_mapping.md` 第5章 ステップ1の表 |
 | R6 | 現実性：`references/10_qc-story.md` 第7章「架空の事例を作るとき」／発生の仕組み：`references/30_qc7.md` 特性要因図「作図の仕様」／設備投資：`references/40_n7.md` 評点法（×の足切り） | `SKILL.md` 組み立て手順 段5 |
@@ -256,8 +256,22 @@ TMCシステム「目視検査の見逃しゼロへ」、Hakky Handbook「外観
 | R12 | `SKILL.md` 応答のしかた、出力の作法12 | — |
 | R13 | `references/90_handoff.md` 第9章「数値骨格を先に固定する」 | `SKILL.md` 組み立て手順 段4、出力の作法9 |
 | G1 | `SKILL.md` Step 0（推測値と架空の数値の線引き） | `references/60_data-design.md`、`references/00_mapping.md` 第3章 |
-| G2 | `SKILL.md` 応答のしかた「確認が必要なこと」 | — |
+| G2 | `SKILL.md` 冒頭「入口：最初に決める5点」 | `SKILL.md` Step 0.5・応答のしかた「確認が必要なこと」 |
 | G3 | `SKILL.md` 図表の作成「見本は一例」、`references/80_examples.md` 冒頭 | 出力の作法14 |
+| G4 | `SKILL.md` 改善プロトコル（記録先の場所） | — |
+| R14 | `SKILL.md` 組み立て手順「段2は成果物：3列の表を出す」 | `SKILL.md` 組み立て手順の表 段2 |
+| R15 | `references/90_handoff.md` 第2章「番号と文言を最後まで引き継ぐ」 | `references/80_examples.md` 付録（①〜⑧）、`references/40_n7.md` 系統図法 よくある失敗 |
+| R16 | `references/90_handoff.md` 第2章「起点の規則と中身の規則は別」 | `references/40_n7.md` 系統図法 よくある失敗、`references/80_examples.md` 付録 |
+| R17 | `references/90_handoff.md` 第9章「数値骨格を先に固定する」（題材の前提） | `SKILL.md` 出力の作法9 |
+| R18 | `references/10_qc-story.md` ステップ7、`references/00_mapping.md` 第5章 ステップ7 | — |
+| R19 | `references/30_qc7.md` 散布図「作図の仕様」、`assets/plot_scatter.py` | `SKILL.md` 図表の作成 |
+| R20 | `references/50_standardization.md` QC工程表「必須項目」、`assets/qc-process-table.xlsx` | `references/80_examples.md` の QC工程表の見本 |
+| R21 | `references/10_qc-story.md` 第7章「対象は1つに絞る。複数にするときの進め方」 | `SKILL.md` Step 0.5 |
+| R22 | `references/10_qc-story.md` 第7章「教材用で気をつけること」 | — |
+| R23 | `SKILL.md` 冒頭「入口：最初に決める5点」 | — |
+| R4(f) | `references/10_qc-story.md` ステップ3「目標は積み上げで作る」の3 | `references/90_handoff.md` 第9章 |
+| R6(d) | `references/10_qc-story.md` 第7章「知らない工程・不良モードのとき」 | `SKILL.md` 組み立て手順 段5 |
+| R13(d)(e) | `references/90_handoff.md` 第9章「数値骨格の表が唯一の元」 | `SKILL.md` 組み立て手順 段4、出力の作法9 |
 
 **同じ原因で不合格が2件以上出たら**、個別に直さず共通の原因を探す（`60_revise.md` 第3章）。
 

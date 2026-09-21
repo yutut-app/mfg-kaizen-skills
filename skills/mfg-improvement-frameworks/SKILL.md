@@ -2,7 +2,7 @@
 name: mfg-improvement-frameworks
 description: "製造現場の問題解決・品質改善に使う。不良、歩留まり、工程異常、ヒューマンエラー、変化点管理、原因分析、再発防止、標準化の相談では必ず使用する。QCストーリー・4M・QC7つ道具・新QC7つ道具で型と道具を選定し、特性要因図・パレート図・管理図・系統図やQC工程表・チェックシートを作成する。手法名が出ていなくても製造・品質の文脈なら使う。資料の構成・文章・スライド化は slider-craft に任せる。経営戦略・財務・人事には使わない。"
 metadata:
-  version: "1.8.2"
+  version: "1.8.3"
   author: "TODO"
 ---
 
@@ -357,6 +357,7 @@ metadata:
 | パレート図 | `30_qc7.md` パレート図「作図の仕様」 | `assets/plot_pareto.py` |
 | 特性要因図 | `30_qc7.md` 特性要因図「作図の仕様」 | `assets/plot_fishbone.py` |
 | 管理図 | `30_qc7.md` 管理図「管理線の計算式」 | `assets/plot_control_chart.py` |
+| 散布図 | `30_qc7.md` 散布図「作図の仕様」 | `assets/plot_scatter.py` |
 | マトリックス図 | `40_n7.md` マトリックス図「評点法」 | 表で作る |
 
 **スクリプトがある図は、自分で軸を組み立てない。** 手で描くと、
