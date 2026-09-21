@@ -12,3 +12,7 @@ Thumbs.db
 *.key
 *.pem
 credentials*
+
+# Python のキャッシュ（作図スクリプトを読み込むと生まれる。配布物に入れない）
+__pycache__/
+*.pyc
