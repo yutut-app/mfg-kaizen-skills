@@ -13,8 +13,8 @@
 
 使い方
     from plot_pareto import plot_pareto
-    plot_pareto({"締め忘れ": 38, "緩み": 21, "傷": 8, "その他": 12},
-                title="A工程 不良項目別", out="pareto_before.png")
+    plot_pareto({"端部": 26, "平面部": 14, "穴周り": 3, "その他": 2},
+                title="塗装ムラ 発生部位別", out="pareto_before.png")
 
     # 効果確認の前後比較（左軸をそろえる）
     ymax = sum(before.values())
@@ -104,13 +104,13 @@ def plot_pareto(counts, title="パレート図", ylabel="件数", out="pareto.pn
     ax2.axhline(left_max * focus, color="gray", linestyle="--", linewidth=0.8)
     ax2.annotate(
         f"累積{focus:.0%} … 上位{n_focus}項目 / {focus_count:.0f}件"
-        f"（{focus_ratio:.1%}、母数 {total:.0f}件）",
+        f"（{focus_ratio:.1%}、不良合計 {total:.0f}件）",
         xy=(n_focus - 1, focus_count), xytext=(0.02, 0.92), textcoords="axes fraction",
         fontsize=9, color="black",
         arrowprops=dict(arrowstyle="->", color="gray", linewidth=0.8),
     )
 
-    ax1.set_title(f"{title}（n={total:.0f}）")
+    ax1.set_title(f"{title}（不良合計 {total:.0f}件）")
     fig.tight_layout()
     fig.savefig(out, dpi=150)
     plt.close(fig)
@@ -121,7 +121,7 @@ def plot_pareto(counts, title="パレート図", ylabel="件数", out="pareto.pn
 
 if __name__ == "__main__":
     r = plot_pareto(
-        {"締め忘れ": 38, "緩み": 21, "傷": 8, "寸法": 5, "その他": 12},
-        title="A工程 不良項目別", out="pareto_sample.png",
+        {"端部": 26, "平面部": 14, "穴周り": 3, "その他": 2},
+        title="塗装ムラ 発生部位別（見本。題材は例）", out="pareto_sample.png",
     )
     print(r)

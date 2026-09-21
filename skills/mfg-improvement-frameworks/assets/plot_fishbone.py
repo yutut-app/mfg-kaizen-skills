@@ -6,7 +6,7 @@
   特性（背骨）: 解決すべき結果。1つだけ。数値があれば添える
   大骨        : 分類の切り口（4M など）
   中骨        : 具体的な要因。現場で起きている事象（名詞・状態）
-  小骨        : 中骨を掘り下げた理由（名詞・状態）
+  小骨        : 中骨が起きる仕組み（名詞・状態）
 
 書かないもの
   - 「知らない／できない」などの発想の型。型は作成時の道具で、図には出さない
@@ -14,20 +14,25 @@
 
 小骨の本数は大骨ごとに揃える。本数の差は「そこが主要因」と読まれるため。
 揃わない場合は check_balance() が警告する。
+小骨には発生の仕組みを書く。点検・校正の周期のような管理の不備は、発生の仕組みと混ぜない
+（30_qc7.md 特性要因図「作図の仕様」）。
+
+下の見本は塗装ムラ。スプレー塗装のムラで一般に挙げられる事象（ガン距離、ガンの動かし方、
+塗料の粘度、吐出量、ノズルの詰まり、乾燥）の範囲で書いた例であり、題材は案件ごとに差し替える。
 
 使い方
     from plot_fishbone import plot_fishbone
     plot_fishbone(
-        "ねじの緩み（1.8%）",
+        "塗装ムラ（1.8%）",
         {
-            "Man": {"締付順序が人によって違う": ["作業標準書に順序の記載がない"],
-                    "増し締めの判断が個人差": ["判断基準が数値化されていない"]},
-            "Machine": {"トルクレンチの精度が落ちる": ["校正の期限が切れている"],
-                        "工具の当たりが悪い": ["ソケットが摩耗している"]},
-            "Material": {"座面の仕上げがばらつく": ["前工程の面粗度が管理外"],
-                         "ワッシャの硬度がばらつく": ["受入検査の項目にない"]},
-            "Method": {"締付トルクがばらつく": ["トルク値が範囲指定で幅が広い"],
-                       "increments が定義されていない": ["段階締めの指示がない"]},
+            "Man": {"ガン距離が一定しない": ["距離を目測で合わせている"],
+                    "ガン移動速度がばらつく": ["折り返しで速度が落ちて重なる"]},
+            "Machine": {"吐出パターンが崩れる": ["ノズルに塗料が固着する"],
+                        "霧化エア圧が変動する": ["エア配管を他設備と共用している"]},
+            "Material": {"塗料の粘度がばらつく": ["気温が低いと粘度が上がる"],
+                         "希釈比率がばらつく": ["シンナーを目分量で足している"]},
+            "Method": {"乾燥前に次工程へ送る": ["機種切替でライン速度が上がる"],
+                       "塗り重ね回数がばらつく": ["膜厚を確かめずに重ねる"]},
         },
         out="fishbone.png")
 """
@@ -69,7 +74,7 @@ def check_balance(bones):
                         warns.append(
                             f"「{text}」は発想の型です（{big}）。"
                             "型は図に書かず、事象で書いてください"
-                            "（例:『作業標準書に締付トルクの記載がない』）。"
+                            "（例:『ガンとワークの距離を目測で合わせている』）。"
                         )
     return warns
 
@@ -92,7 +97,7 @@ def plot_fishbone(characteristic, bones, out="fishbone.png", title=None, strict=
     n_top = (len(bigs) + 1) // 2
     n_bot = len(bigs) - n_top
 
-    fig, ax = plt.subplots(figsize=(14, 8))
+    fig, ax = plt.subplots(figsize=(14, 9))
     ax.axis("off")
     spine_y = 0.5
     spine_x0, spine_x1 = 0.04, 0.80
@@ -113,7 +118,7 @@ def plot_fishbone(characteristic, bones, out="fishbone.png", title=None, strict=
             # 大骨の根元を背骨上に等間隔で置く
             base_x = spine_x0 + 0.09 + span * (i + 0.5) / len(names)
             tip_x = base_x - 0.085
-            tip_y = spine_y + sign * 0.33
+            tip_y = spine_y + sign * 0.40
             ax.annotate("", xy=(base_x, spine_y), xytext=(tip_x, tip_y),
                         arrowprops=dict(arrowstyle="-|>", linewidth=1.8, color="#333333"))
             ax.text(tip_x, tip_y + sign * 0.035, big, ha="center",
@@ -126,7 +131,7 @@ def plot_fishbone(characteristic, bones, out="fishbone.png", title=None, strict=
                 # 中骨: 大骨に斜めに接続する
                 t = (j + 1) / (len(mids) + 1)
                 mx = base_x - 0.085 * t
-                my = spine_y + sign * 0.33 * t
+                my = spine_y + sign * 0.40 * t
                 m_end_x = mx - 0.115
                 ax.annotate("", xy=(mx, my), xytext=(m_end_x, my),
                             arrowprops=dict(arrowstyle="-", linewidth=1.2, color="#555555"))
@@ -138,12 +143,12 @@ def plot_fishbone(characteristic, bones, out="fishbone.png", title=None, strict=
                     sx = m_end_x + 0.115 * u
                     sy = my
                     s_tip_x = sx - 0.030
-                    s_tip_y = sy + sign * 0.085
+                    s_tip_y = sy + sign * 0.040
                     ax.annotate("", xy=(sx, sy), xytext=(s_tip_x, s_tip_y),
                                 arrowprops=dict(arrowstyle="-", linewidth=0.9,
                                                 color="#888888"))
                     ax.text(s_tip_x - 0.004, s_tip_y, small, ha="right",
-                            va="bottom" if upper else "top", fontsize=8, color="#333333")
+                            va="center", fontsize=8, color="#333333")
 
     draw_side(bigs[:n_top], upper=True)
     draw_side(bigs[n_top:n_top + n_bot], upper=False)
@@ -160,16 +165,16 @@ def plot_fishbone(characteristic, bones, out="fishbone.png", title=None, strict=
 
 if __name__ == "__main__":
     w = plot_fishbone(
-        "ねじの緩み（1.8%）",
+        "塗装ムラ（1.8%）",
         {
-            "Man": {"締付順序が人によって違う": ["作業標準書に順序の記載がない"],
-                    "増し締めの判断に個人差がある": ["判断基準が数値化されていない"]},
-            "Machine": {"トルクレンチの精度が落ちる": ["校正の期限が切れている"],
-                        "工具の当たりが悪い": ["ソケットが摩耗している"]},
-            "Material": {"座面の仕上げがばらつく": ["前工程の面粗度が管理外"],
-                         "ワッシャの硬度がばらつく": ["受入検査の項目にない"]},
-            "Method": {"締付トルクがばらつく": ["トルク値が範囲指定で幅が広い"],
-                       "段階締めの手順がない": ["標準書に締付回数の指示がない"]},
+            "Man": {"ガン距離が一定しない": ["距離を目測で合わせている"],
+                    "ガン移動速度がばらつく": ["折り返しで速度が落ちて重なる"]},
+            "Machine": {"吐出パターンが崩れる": ["ノズルに塗料が固着する"],
+                        "霧化エア圧が変動する": ["エア配管を他設備と共用している"]},
+            "Material": {"塗料の粘度がばらつく": ["気温が低いと粘度が上がる"],
+                         "希釈比率がばらつく": ["シンナーを目分量で足している"]},
+            "Method": {"乾燥前に次工程へ送る": ["機種切替でライン速度が上がる"],
+                       "塗り重ね回数がばらつく": ["膜厚を確かめずに重ねる"]},
         },
         out="fishbone_sample.png",
     )
