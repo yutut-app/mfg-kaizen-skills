@@ -1,7 +1,7 @@
 {
   "name": "mfg-kaizen-skills",
   "description": "製造業の業務改善・品質管理を支援するスキル群。QCストーリー、4M、QC7つ道具、新QC7つ道具などのフレームワークを使い、原因分析から標準化までを体系的に進める。",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "author": {
     "name": "TODO: 記入してください"
   },

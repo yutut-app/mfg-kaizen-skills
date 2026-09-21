@@ -13,8 +13,8 @@
 
 使い方
     from plot_pareto import plot_pareto
-    plot_pareto({"端部": 26, "平面部": 14, "穴周り": 3, "その他": 2},
-                title="塗装ムラ 発生部位別", out="pareto_before.png")
+    plot_pareto({"手順": 15, "表示・合図": 9, "体調・時間帯": 9, "足元・通路": 7},
+                title="ヒヤリハット 分類別", out="pareto_before.png")
 
     # 効果確認の前後比較（左軸をそろえる）
     ymax = sum(before.values())
@@ -121,7 +121,7 @@ def plot_pareto(counts, title="パレート図", ylabel="件数", out="pareto.pn
 
 if __name__ == "__main__":
     r = plot_pareto(
-        {"端部": 26, "平面部": 14, "穴周り": 3, "その他": 2},
-        title="塗装ムラ 発生部位別（見本。題材は例）", out="pareto_sample.png",
+        {"手順": 15, "表示・合図": 9, "体調・時間帯": 9, "足元・通路": 7},
+        title="ヒヤリハット 分類別（見本。題材は例）", out="pareto_sample.png",
     )
     print(r)
