@@ -104,13 +104,13 @@ def plot_pareto(counts, title="パレート図", ylabel="件数", out="pareto.pn
     ax2.axhline(left_max * focus, color="gray", linestyle="--", linewidth=0.8)
     ax2.annotate(
         f"累積{focus:.0%} … 上位{n_focus}項目 / {focus_count:.0f}件"
-        f"（{focus_ratio:.1%}、不良合計 {total:.0f}件）",
+        f"（{focus_ratio:.1%}、合計 {total:.0f}件）",
         xy=(n_focus - 1, focus_count), xytext=(0.02, 0.92), textcoords="axes fraction",
         fontsize=9, color="black",
         arrowprops=dict(arrowstyle="->", color="gray", linewidth=0.8),
     )
 
-    ax1.set_title(f"{title}（不良合計 {total:.0f}件）")
+    ax1.set_title(f"{title}（合計 {total:.0f}件）")
     fig.tight_layout()
     fig.savefig(out, dpi=150)
     plt.close(fig)
