@@ -11,7 +11,7 @@
 | スキル | 版 | 概要 | 状態 |
 |---|---|---|---|
 | [`mfg-improvement-frameworks`](skills/mfg-improvement-frameworks/) | 1.8.3 | 製造現場の問題解決をQCストーリー・4M・QC7つ道具・新QC7つ道具で体系的に支援 | 運用中（育成期） |
-| [`qms-navigator`](skills/qms-navigator/) | 0.2.0 | ISO 9001（2015・2026）を土台に業界規格（自動車は IATF 16949・コアツール）を重ね、仕事・文書を条項で検査。相手（自社・仕入先・顧客・審査員）別に出力 | 試験済み（要旨は未照合、IATF 番号は公開一覧で確認） |
+| [`qms-navigator`](skills/qms-navigator/) | 0.3.0 | ISO 9001:2026 を土台に業界規格（自動車は IATF 16949・コアツール）を重ね、仕事・文書を条項で検査。相手（自社・仕入先・顧客・審査員）別に出力 | 試験済み（要旨は未照合、IATF 番号は公開一覧で確認） |
 
 **主戦場は Cowork。** スキルを育てている間は Cowork のみで使い、安定してからチャットにも配布する。
 理由は [設計書 v0.2](docs/design/mfg-improvement-frameworks-v0.2.md) を参照。
