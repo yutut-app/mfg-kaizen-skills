@@ -8,6 +8,11 @@
   3. 基準を外れる領域を塗り、何の領域かを書き込む
   4. 群のラベルを、凡例ではなく点の近くに書く
 
+基準線を引いたら、その前後に点が分かれているかも見る（仕様6）。
+片側に点が1個だけの図は「どちらの要因でも起きる」と読め、しきい値の主張が成り立たない。
+**これから基準値を決める図では limit_role="しきい値" を渡す。** 既定の "規格" では、
+規格内に全点が収まっている図を正常として扱う（外側が1個だけのときだけ警告する）。
+
 基準（y_limits / x_limits）を渡さないと警告を出す。基準のない散布図は、
 点がどこにあれば問題なのかが読めない。
 
@@ -50,14 +55,60 @@ def _pearson(xs, ys):
     return sxy / math.sqrt(sxx * syy) if sxx > 0 and syy > 0 else float("nan")
 
 
+_MIN_PER_SIDE = 2  # 1点では偶然と区別できないため、しきい値の前後に最低2点を求める
+
+
+def _check_both_sides(all_x, all_y, x_limits, x_limit_name, y_limits, y_limit_name,
+                      limit_role):
+    """基準線の前後に点が分かれているかを見る。足りない側を文章で返す。
+
+    limit_role で見方が変わる。無条件に「両側に点が要る」とすると、
+    **規格内に全点が収まっている正常な図まで警告になる。**
+
+      "規格"     既に決まっている規格・公差を描いた図。外側が0個でよい（規格内なら当然）。
+                 ただし**外側が1個だけ**なら警告する。1点で境界を主張すると誤読される。
+      "しきい値" これから基準値を決める・提案するための図。両側に2点以上を要求する。
+    """
+    out = []
+    for values, limits, name, axis in ((all_x, x_limits, x_limit_name, "横軸"),
+                                       (all_y, y_limits, y_limit_name, "縦軸")):
+        if not limits:
+            continue
+        lo, hi = limits
+        for v, side, outside in ((lo, "下限", [p for p in values if lo is not None and p < lo]),
+                                 (hi, "上限", [p for p in values if hi is not None and p > hi])):
+            if v is None:
+                continue
+            n = len(outside)
+            if limit_role == "しきい値" and n < _MIN_PER_SIDE:
+                out.append(f"{axis}の{name} {side} {v:g} の外側の点が{n}個しかありません。"
+                           f"しきい値を主張する図では{_MIN_PER_SIDE}個以上必要です。"
+                           f"1個だと「どちらの要因でも起きる」と読めます。")
+            elif limit_role == "規格" and n == 1:
+                out.append(f"{axis}の{name} {side} {v:g} の外側の点が1個だけです。"
+                           f"1点で境界を主張すると誤読されます。"
+                           f"条件を広げて点を増やすか、しきい値の主張をやめてください。")
+        inside = sum(1 for v in values
+                     if (lo is None or v >= lo) and (hi is None or v <= hi))
+        if limit_role == "しきい値" and inside < _MIN_PER_SIDE:
+            out.append(f"{axis}の{name}の内側の点が{inside}個しかありません。"
+                       f"内側と外側を比べられません。")
+    return out
+
+
 def plot_scatter(groups, purpose, xlabel, ylabel, out="scatter.png",
-                 y_limits=None, y_limit_name="基準", x_limits=None, x_limit_name="基準"):
+                 y_limits=None, y_limit_name="基準", x_limits=None, x_limit_name="基準",
+                 limit_role="規格", strict=False):
     """散布図を描いて out に保存する。
 
     groups  : dict[str, (list[x], list[y])]  群名 -> (x の並び, y の並び)。群が1つでも dict で渡す
     purpose : str   何の値を決めるための散布図か（必須。表題になる）
     y_limits: (下限, 上限)  結果側（縦軸）の基準。片側だけなら None を入れる
     x_limits: (下限, 上限)  原因側（横軸）の基準（設定値の許容範囲など）。任意
+    limit_role: "規格"（既に決まっている規格・公差を描く。既定）か
+                "しきい値"（これから基準値を決める・提案する図）。
+                後者では基準線の両側に2点以上あるかを見る
+    strict  : True なら警告で例外にする（検証・自動実行で使う）
 
     戻り値: dict（全体の相関係数、群ごとの相関係数、群ごとの点数、警告）
     """
@@ -76,6 +127,17 @@ def plot_scatter(groups, purpose, xlabel, ylabel, out="scatter.png",
         all_y += list(ys)
     if len(all_x) < 30:
         warns.append(f"点が{len(all_x)}組で30組未満です。傾向が読めない可能性があります（30_qc7.md 件数の早見表）。")
+
+    # 仕様6：基準線の前後に点があるか
+    # 片側に点が1個しかない図は、「速度だけ悪くても面積だけ悪くても出る」と読める。
+    # 2点を下限にする理由：1点では偶然と区別できず、しきい値の主張が成り立たない。
+    if limit_role not in ("規格", "しきい値"):
+        raise ValueError('limit_role は "規格" か "しきい値" のどちらかです。'
+                         f'（渡された値: {limit_role!r}）')
+    warns += _check_both_sides(all_x, all_y, x_limits, x_limit_name, y_limits, y_limit_name,
+                               limit_role)
+    if strict and warns:
+        raise ValueError("散布図の仕様を満たしていません:\n  - " + "\n  - ".join(warns))
 
     fig, ax = plt.subplots(figsize=(8, 5.5))
 

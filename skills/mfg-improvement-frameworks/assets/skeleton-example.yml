@@ -1,0 +1,69 @@
+# 数値骨格の様式（見本）。`check_numbers.py` に通す形。
+#
+# **この表が唯一の元。** 資料の数字はすべてここから作る（90_handoff.md 第9章）。
+# 数字を変えるときは、資料ではなくこのファイルを先に変え、検査を通してから作り直す。
+#
+# 見本の題材はフロー実装のはんだ不良。**題材は案件ごとに差し替える。見本は一例。**
+# 置き場所はスキルの外（案件のフォルダ）。スキルは様式だけを持つ。
+
+title: はんだ不良の低減（見本・架空の事例）
+fictional: true          # 架空の事例。true のとき conditions の出所が必須になる
+
+overall:
+  count: 19              # 不良件数
+  base: 102400           # 母数（はんだ付け点数）
+  rate_percent: 0.019
+
+strata:                  # 層別。件数・母数の縦計が overall と一致すること
+  - name: 大型コネクタ
+    count: 15
+    base: 6400
+    rate_percent: 0.234
+  - name: 中型部品
+    count: 1
+    base: 6000
+    rate_percent: 0.017
+  - name: 小型部品
+    count: 3
+    base: 90000
+    rate_percent: 0.003
+
+premises:                # 題材の前提。満たしていなければ題材の作り方が間違っている
+  cumulative_top_n: 1
+  cumulative_share: 0.75
+
+target:
+  baseline_count: 19
+  target_count: 6        # ゼロを目標にしない。到達下限を根拠つきで置く
+  items:                 # 積み上げ。合計が baseline - target と一致すること
+    - name: 予熱の追加（面積 50mm² 以上）
+      reduction: 9
+    - name: 搬送速度の上限設定
+      reduction: 4
+
+monthly:                 # 月ごとの段。各段に、その月に効く取り組みを書く
+  - month: "2026-11"
+    count: 15
+    actions: ["予熱条件の試作機での確認"]
+  - month: "2026-12"
+    count: 10
+    actions: ["予熱の追加（1号機）"]
+  - month: "2027-01"
+    count: 6
+    actions: ["予熱の追加（全機）", "搬送速度の上限を作業標準書に反映"]
+
+conditions:              # 架空の数値に使った条件と、その出所
+  - name: 搬送速度
+    value: "1.0 m/min"
+    source: "（調べた出所を書く）"
+    range: "0.8〜1.3 m/min"
+  - name: はんだに触れる時間
+    value: "2.5 秒"
+    source: "（調べた出所を書く）"
+    range: "2〜3 秒"
+  - name: 予熱
+    value: "120℃・40 秒"
+    source: "（調べた出所を書く）"
+  - name: スルーホール充填
+    value: "75%"
+    source: "IPC-A-610 クラス2"
