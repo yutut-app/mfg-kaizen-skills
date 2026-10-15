@@ -19,3 +19,6 @@ __pycache__/
 
 # 作図スクリプトを単体実行したときの見本出力
 *_sample.png
+
+# skill-creator の評価用作業場所（配布しない）
+qms-navigator-workspace/
