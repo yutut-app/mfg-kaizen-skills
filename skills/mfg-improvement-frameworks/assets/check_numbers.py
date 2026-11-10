@@ -19,6 +19,8 @@ SKILL.md「出力の作法9（検算）」と `90_handoff.md` 第9章（数値�
     5. 月ごとの段（到達値・単調減少・各段の取り組み）
     6. 題材の前提（上位何項目で累積何割か）
     7. 架空の事例で置いた条件に出所があるか
+    8. 一覧（list）の行数・重複・欠落 ＝ 元データの件数
+    9. 対応表（matrix）の組み合わせの件数 ＝ 元データから数え直した件数
 
 終了コード: 0 = すべて一致 / 1 = 不一致あり / 2 = ファイルや様式の誤り
 """
@@ -169,6 +171,76 @@ def check_conditions(d, r):
             r.ok.append(f"条件の出所（{c['name']}）: {c['source']}")
 
 
+def check_list(d, r):
+    """一覧の行数・重複・欠落を照合する。
+
+    スライドの数字だけを検算していて、一覧（Excel・台帳）の件数を照合していなかった。
+    実績：会議ごとの使用指標がずれ、スクリーンショットを撮り直すことになった。
+    """
+    lst = d.get("list") or {}
+    if not lst:
+        r.skip("一覧の照合（list が無い）")
+        return
+    items = lst.get("items") or []
+    if not items:
+        r.fail("一覧の照合", "items が空。一覧の中身を渡していない", "list.items")
+        return
+    r.check("一覧の行数", lst.get("expected_rows"), len(items), "list.expected_rows と list.items")
+
+    # 重複（同じ値が2回以上）
+    seen, dup = set(), []
+    for v in items:
+        (dup.append(v) if v in seen else seen.add(v))
+    if dup:
+        r.fail("一覧の重複", f"{len(dup)}件が重複: {sorted(set(dup))[:5]}", "list.items")
+    else:
+        r.ok.append(f"一覧の重複: なし（{len(items)}行）")
+
+    # 欠落（元データにあって一覧に無い）
+    source = lst.get("source_items")
+    if source:
+        missing = [v for v in source if v not in seen]
+        extra = [v for v in items if v not in set(source)]
+        if missing:
+            r.fail("一覧の欠落", f"元データにあって一覧に無い: {missing[:5]}（{len(missing)}件）",
+                   "list.source_items と list.items")
+        if extra:
+            r.fail("一覧の余り", f"元データに無い値が一覧にある: {extra[:5]}（{len(extra)}件）",
+                   "list.items")
+        if not missing and not extra:
+            r.ok.append(f"一覧と元データの一致: {len(source)}件")
+    else:
+        r.skip("一覧の欠落（list.source_items が無い）")
+
+
+def check_matrix(d, r):
+    """対応表（会議×指標など）の組み合わせの件数を照合する。"""
+    mx = d.get("matrix") or {}
+    if not mx:
+        r.skip("対応表の照合（matrix が無い）")
+        return
+    cells = mx.get("cells") or {}
+    if not cells:
+        r.fail("対応表の照合", "cells が空。どの組み合わせに丸が付くかを渡していない", "matrix.cells")
+        return
+    total = sum(len(v) for v in cells.values())
+    r.check("対応表の組み合わせの件数", mx.get("expected_pairs"), total,
+            "matrix.expected_pairs と matrix.cells")
+    # 行側の各項目が、少なくとも1つの列に対応しているか
+    orphan = [k for k, v in cells.items() if not v]
+    if orphan:
+        r.fail("対応先の無い項目", f"どの列にも対応していない: {orphan[:5]}（{len(orphan)}件）",
+               "matrix.cells")
+    # 列側に、一覧に無い値が出ていないか
+    cols = mx.get("columns")
+    if cols:
+        unknown = sorted({c for v in cells.values() for c in v} - set(cols))
+        if unknown:
+            r.fail("列に無い値", f"columns に無い値が使われている: {unknown[:5]}", "matrix.cells")
+        else:
+            r.ok.append(f"対応表の列: {len(cols)}列すべて既知")
+
+
 def main(argv):
     if len(argv) != 2:
         print(__doc__)
@@ -185,7 +257,8 @@ def main(argv):
         return 2
 
     r = Report()
-    for fn in (check_strata, check_target, check_monthly, check_premises, check_conditions):
+    for fn in (check_strata, check_target, check_monthly, check_premises, check_conditions,
+               check_list, check_matrix):
         fn(d, r)
 
     print(f"数値骨格: {path}（{d.get('title', '題名なし')}）")
