@@ -5,7 +5,8 @@
 - 入力：第14回定例MTG資料の設計レビュー（2026-11-16〜17）。Q-1〜Q-7、事実 H0〜H4、うまく働いた点 W-1〜W-5
 - 準拠：`skill-builder`（`60_revise.md`・`15_strength.md`・`10_description.md`・`40_test.md`）、公式 `skill-creator`
 - スコープ：**QCスキルのみ。** パワポ系（`slider-pptx-craft` / `slider-script` / `slider-deck`）は別セッション
-- 状態：**設計のみ。実装は未着手（承認待ち）**
+- 状態：**実装・検証済み（v1.12.0, 2026-11-17）。** 6コミット＋記録。
+  検証は `docs/ops/verification-v1.12.md`（手順7 は**2事例とも不合格0**）
 
 ## 0. 今回の症状は、これまでと種類が違う
 
