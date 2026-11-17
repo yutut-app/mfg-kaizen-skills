@@ -11,6 +11,13 @@
 **配布はスキルフォルダ単位**なので、`docs/` が無い環境が必ずある。
 探す順と、書いた場所の報告を機械に持たせれば沈黙しない。
 
+**このファイルは、同じリポジトリの複数のスキルに同じものを置く。**
+配布がスキルフォルダ単位なので、別のスキルから参照すると、そのスキルだけをコピーした環境で壊れる。
+**直すときは、置いてあるすべてのスキルで直す**（`check_edit.sh` に旧文字列を渡して確かめる）。
+
+**スキル名は置き場所から決まる**（このファイルの2つ上のディレクトリ名）。
+記録先のファイル名もそこから決まるので、スキルごとに書き換える必要はない。
+
 使い方
     python3 log_feedback.py --date 2026-11-17 --req "<依頼の要約>" \\
         --expected "<期待した挙動>" --actual "<実際の挙動>" \\
@@ -19,10 +26,12 @@
     python3 log_feedback.py --where     記録先だけ表示する
     python3 log_feedback.py --show      ホーム配下の記録を表示する（取り込み用）
 
-記録先を探す順
-    1. 環境変数 MFG_FEEDBACK が指すファイル（**別PCではここで指定する**）
-    2. スキルの実体から2つ上の docs/feedback.md（リンク環境＝リポジトリの中に実体がある）
-    3. ~/.claude/mfg-feedback-local.md（**どのPCでも書ける**。無ければ作る）
+記録先を探す順（`<skill>` はこのファイルの2つ上のディレクトリ名）
+    1. 環境変数 FEEDBACK_LOG（または MFG_FEEDBACK）が指すファイル
+       **別PCではここで指定する**
+    2. スキルの実体から2つ上の docs/feedback-<skill>.md、無ければ docs/feedback.md
+       （リンク環境＝リポジトリの中に実体がある）
+    3. ~/.claude/<skill>-feedback-local.md（**どのPCでも書ける**。無ければ作る）
 
 3番に書いたときは「このPCの記録はリポジトリに入っていない」と添える。
 **追記した行は標準出力にも出す。** 会話に残れば、リポジトリを持つセッションが本ログへ移せる。
@@ -33,8 +42,9 @@ import os
 import sys
 from pathlib import Path
 
-LOCAL = Path.home() / ".claude" / "mfg-feedback-local.md"
-LOCAL_HEADER = """# 改善ログ（このPCの控え）
+SKILL_NAME = Path(__file__).resolve().parent.parent.name   # .../skills/<skill>/assets/ の <skill>
+LOCAL = Path.home() / ".claude" / f"{SKILL_NAME}-feedback-local.md"
+LOCAL_HEADER = f"""# 改善ログ（このPCの控え） — {SKILL_NAME}
 
 **リポジトリの `docs/feedback.md` に入っていない。** スキルをコピーした環境で書かれたもの。
 リポジトリを持つセッションに渡して、本ログへ移す。
@@ -51,20 +61,25 @@ def resolve():
     指定したつもりの場所に書かれていないことに気づけない。
     """
     notes = []
-    env = os.environ.get("MFG_FEEDBACK")
-    if env:
+    for var in ("FEEDBACK_LOG", "MFG_FEEDBACK"):
+        env = os.environ.get(var)
+        if not env:
+            continue
         p = Path(env).expanduser()
         if p.parent.is_dir():
-            return p, "1 環境変数 MFG_FEEDBACK", True, notes
-        notes.append(f"環境変数 MFG_FEEDBACK=`{env}` は使えない"
+            return p, f"1 環境変数 {var}", True, notes
+        notes.append(f"環境変数 {var}=`{env}` は使えない"
                      f"（親ディレクトリ {p.parent} が無い）。次の候補に落ちた")
 
     # 2: スキルの実体から2つ上。シンボリックリンクは解決してから辿る
     skill_dir = Path(__file__).resolve().parent.parent      # .../skills/<name>/
-    repo_docs = skill_dir.parent.parent / "docs" / "feedback.md"
-    if repo_docs.exists():
-        return repo_docs, "2 実体から2つ上の docs/feedback.md", True, notes
-    notes.append(f"{repo_docs} が無い（コピー環境。リポジトリの docs/ は配布されない）")
+    docs = skill_dir.parent.parent / "docs"
+    for name in (f"feedback-{SKILL_NAME}.md", "feedback.md"):
+        cand = docs / name
+        if cand.exists():
+            return cand, f"2 実体から2つ上の docs/{name}", True, notes
+    notes.append(f"{docs}/feedback-{SKILL_NAME}.md と {docs}/feedback.md が無い"
+                 "（コピー環境。リポジトリの docs/ は配布されない）")
 
     return LOCAL, "3 ホーム配下の控え", False, notes
 
@@ -128,7 +143,7 @@ def main(argv=None):
     if not in_repo:
         print("\n**このPCの記録はリポジトリに入っていない。**")
         print("上の行を、リポジトリを持つセッションに渡して docs/feedback.md へ移す。")
-        print("別PCで毎回ここに落ちるなら、環境変数 MFG_FEEDBACK で記録先を指定する。")
+        print("別PCで毎回ここに落ちるなら、環境変数 FEEDBACK_LOG で記録先を指定する。")
     return 0
 
 
